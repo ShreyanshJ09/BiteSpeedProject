@@ -1,4 +1,3 @@
-// controllers/identifyController.js
 const Contact = require('../model/contact');
 const { Op } = require('sequelize');
 
