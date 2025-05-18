@@ -1,12 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const sequelize = require('./database');
-const Contact = require('./models/contact');
+const Contact = require('./model/contact');
+
+const { connectToDatabase, sequelize } = require('./connect_db');
+const { Op } = require('sequelize');
 
 const app = express();
 app.use(bodyParser.json());
 
-sequelize.sync();
+(async () => {
+    await connectToDatabase();
+    await sequelize.sync({ force: true });
+})();
 
 app.post('/identify', async (req, res) => {
   const { email, phoneNumber } = req.body;
@@ -17,7 +22,7 @@ app.post('/identify', async (req, res) => {
 
   const matchedContacts = await Contact.findAll({
     where: {
-      [sequelize.Op.or]: [
+      [Op.or]: [
         { email },
         { phoneNumber }
       ]
@@ -54,7 +59,7 @@ app.post('/identify', async (req, res) => {
 
   const allLinkedContacts = await Contact.findAll({
     where: {
-      [sequelize.Op.or]: [
+      [Op.or]: [
         { id: primaryContact.id },
         { linkedId: primaryContact.id }
       ]

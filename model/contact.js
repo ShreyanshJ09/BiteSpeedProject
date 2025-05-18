@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
-
+const { sequelize } = require('../connect_db'); 
 const Contact = sequelize.define('Contact', {
   phoneNumber: {
     type: DataTypes.STRING,
